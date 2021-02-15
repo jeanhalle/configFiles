@@ -1,0 +1,41 @@
+version: '3'
+services:
+
+  prodMysql:
+    image: mysql:5.7.25
+    command: --default-authentication-plugin=mysql_native_password --lower-case-table-names=1
+    restart: always
+    volumes:
+      - ./resources/prod_struct_20191216NSP.sql:/docker-entrypoint-initdb.d/01-struct.sql
+      - ./resources/prod_data_20191216.sql:/docker-entrypoint-initdb.d/02-data.sql
+      - ./resources/createUserSP.sql:/docker-entrypoint-initdb.d/03-script.sql
+      - ./resources/mysqldataProd:/var/lib/mysql
+      - ./resources/mysqlconf:/etc/mysql/conf.d
+    ports:
+     - 3306:3306
+    environment:
+     - "MYSQL_ROOT_PASSWORD=t0ughPw"
+     - "MYSQL_DATABASE=db"
+     - "MYSQL_USER=g3user"
+     - "MYSQL_PASSWORD=t0ughPw"
+     - "MYSQL_ROOT_HOST=%"
+
+  testMysql:
+    image: mysql:5.7.25
+    command: --default-authentication-plugin=mysql_native_password --lower-case-table-names=1
+    restart: always
+    volumes:
+      - ./resources/test_struct_20210204.sql:/docker-entrypoint-initdb.d/script01.sql
+      - ./resources/test_data_20210204.sql:/docker-entrypoint-initdb.d/script02.sql
+      - ./resources/createUserSP.sql:/docker-entrypoint-initdb.d/script03.sql
+      - ./resources/mysqldataTest:/var/lib/mysql
+      - ./resources/mysqlconf:/etc/mysql/conf.d
+    ports:
+     - 3307:3306
+    environment:
+     - "MYSQL_ROOT_PASSWORD=t0ughPw"
+     - "MYSQL_DATABASE=db"
+     - "MYSQL_USER=user"
+     - "MYSQL_PASSWORD=t0oughPw"
+     - "MYSQL_ROOT_HOST=%"
+
